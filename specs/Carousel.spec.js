@@ -31,10 +31,17 @@ describe("Carousel functionality", () => {
         global.document = dom.window.document;
     });
 
+    // Arrange
+    const testImages = [
+        'https://picsum.photos/id/1002/4312/2868',
+        'https://picsum.photos/id/1003/1181/1772',
+        'https://picsum.photos/id/1015/6000/4000'
+    ];
+
     it("should create an instance of a Carousel with an element and images", () => {
         // Arrange
-        const images = [];
         const carouselElement = document.querySelector('[data-cmp="carousel"]');
+        const images = [];
 
         // Act
         const carousel = new Carousel(carouselElement, images);
@@ -47,7 +54,6 @@ describe("Carousel functionality", () => {
     });
 
     it("should create an instance of a Carousel with a null component property", () => {
-        // Arrange
         // Act
         const carousel = new Carousel();
 
@@ -57,16 +63,10 @@ describe("Carousel functionality", () => {
 
     it("should create an instance of a Carousel and display the first image in the viewport", () => {
         // Arrange
-        const firstImage = 'https://picsum.photos/id/1002/4312/2868';
-        const images = [
-            firstImage,
-            'https://picsum.photos/id/1003/1181/1772',
-            'https://picsum.photos/id/1015/6000/4000'
-        ];
         const carouselElement = document.querySelector('[data-cmp="carousel"]');
-
+        
         // Act
-        const carousel = new Carousel(carouselElement, images);
+        const carousel = new Carousel(carouselElement, testImages);
 
         // Assert
         expect(carousel.viewport).to.exist;
@@ -75,38 +75,26 @@ describe("Carousel functionality", () => {
         const image = carousel.viewport.querySelector('img');
         
         // Assert
-        expect(image).to.have.attr('src').equal(firstImage);
+        expect(image).to.have.attr('src').equal(testImages[0]);
     });
 
     it("render the next image after next method invoked", () => {
         // Arrange
-        const secondImage = 'https://picsum.photos/id/1003/1181/1772';
-        const images = [
-            'https://picsum.photos/id/1002/4312/2868',
-            secondImage,
-            'https://picsum.photos/id/1015/6000/4000'
-        ];
         const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        const carousel = new Carousel(carouselElement, images);
+        const carousel = new Carousel(carouselElement, testImages);
 
         // Act
         carousel.next();
         const image = carousel.viewport.querySelector('img');
         
         // Assert
-        expect(image).to.have.attr('src').equal(secondImage);
+        expect(image).to.have.attr('src').equal(testImages[1]);
     });
 
     it("render the first image after reaching the end of the list of images", () => {
         // Arrange
-        const firstImage = 'https://picsum.photos/id/1002/4312/2868';
-        const images = [
-            firstImage,
-            'https://picsum.photos/id/1003/1181/1772',
-            'https://picsum.photos/id/1015/6000/4000'
-        ];
         const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        const carousel = new Carousel(carouselElement, images);
+        const carousel = new Carousel(carouselElement, testImages);
 
         // Act
         carousel.next();    // goto 2nd image
@@ -115,19 +103,13 @@ describe("Carousel functionality", () => {
         const image = carousel.viewport.querySelector('img');
         
         // Assert
-        expect(image).to.have.attr('src').equal(firstImage);
+        expect(image).to.have.attr('src').equal(testImages[0]);
     });
 
     it("render the first image after calling next, then prev methods", () => {
         // Arrange
-        const firstImage = 'https://picsum.photos/id/1002/4312/2868';
-        const images = [
-            firstImage,
-            'https://picsum.photos/id/1003/1181/1772',
-            'https://picsum.photos/id/1015/6000/4000'
-        ];
         const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        const carousel = new Carousel(carouselElement, images);
+        const carousel = new Carousel(carouselElement, testImages);
 
         // Act
         carousel.next();    // goto 2nd image
@@ -135,24 +117,19 @@ describe("Carousel functionality", () => {
         const image = carousel.viewport.querySelector('img');
         
         // Assert
-        expect(image).to.have.attr('src').equal(firstImage);
+        expect(image).to.have.attr('src').equal(testImages[0]);
     });
 
     it("render the last image after immediately calling prev method", () => {
         // Arrange
-        const images = [
-            'https://picsum.photos/id/1002/4312/2868',
-            'https://picsum.photos/id/1003/1181/1772',
-            'https://picsum.photos/id/1015/6000/4000'
-        ];
         const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        const carousel = new Carousel(carouselElement, images);
+        const carousel = new Carousel(carouselElement, testImages);
 
         // Act
         carousel.prev();    // goto last image
         const image = carousel.viewport.querySelector('img');
         
         // Assert
-        expect(image).to.have.attr('src').equal(images[2]);
+        expect(image).to.have.attr('src').equal(testImages[2]);
     });
 });
