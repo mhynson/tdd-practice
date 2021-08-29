@@ -6,6 +6,13 @@ const { JSDOM } = require("jsdom");
 const Carousel = require("../src/Carousel");
 
 describe("Carousel functionality", () => {
+    // Arrange
+    const testImages = [
+        'https://picsum.photos/id/1002/4312/2868',
+        'https://picsum.photos/id/1003/1181/1772',
+        'https://picsum.photos/id/1015/6000/4000'
+    ];
+
     beforeEach(() => {
         const dom = new JSDOM(`
             <html>
@@ -29,23 +36,22 @@ describe("Carousel functionality", () => {
 
         global.window = dom.window;
         global.document = dom.window.document;
+
+        // Act
+        const carouselElement = global.document.querySelector('[data-cmp="carousel"]');
+        global.carouselElement = carouselElement;
+        global.carousel = new Carousel(carouselElement, testImages);
     });
 
-    // Arrange
-    const testImages = [
-        'https://picsum.photos/id/1002/4312/2868',
-        'https://picsum.photos/id/1003/1181/1772',
-        'https://picsum.photos/id/1015/6000/4000'
-    ];
+    
 
     it("should create an instance of a Carousel with an element and images", () => {
         // Arrange
-        const carouselElement = document.querySelector('[data-cmp="carousel"]');
         const images = [];
-
+        
         // Act
         const carousel = new Carousel(carouselElement, images);
-
+        
         // Assert
         expect(carousel).to.be.an("object");
         expect(carousel.component).to.be.equal(carouselElement);
@@ -62,27 +68,15 @@ describe("Carousel functionality", () => {
     });
 
     it("should create an instance of a Carousel and display the first image in the viewport", () => {
-        // Arrange
-        const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        
-        // Act
-        const carousel = new Carousel(carouselElement, testImages);
-
-        // Assert
-        expect(carousel.viewport).to.exist;
-
         // Act
         const image = carousel.viewport.querySelector('img');
         
         // Assert
+        expect(carousel.viewport).to.exist;
         expect(image).to.have.attr('src').equal(testImages[0]);
     });
 
     it("render the next image after next method invoked", () => {
-        // Arrange
-        const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        const carousel = new Carousel(carouselElement, testImages);
-
         // Act
         carousel.next();
         const image = carousel.viewport.querySelector('img');
@@ -91,11 +85,7 @@ describe("Carousel functionality", () => {
         expect(image).to.have.attr('src').equal(testImages[1]);
     });
 
-    it("render the first image after reaching the end of the list of images", () => {
-        // Arrange
-        const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        const carousel = new Carousel(carouselElement, testImages);
-
+    it("render the first image after reaching the end of the list of images", () => { 
         // Act
         carousel.next();    // goto 2nd image
         carousel.next();    // goto 3rd image
@@ -107,10 +97,6 @@ describe("Carousel functionality", () => {
     });
 
     it("render the first image after calling next, then prev methods", () => {
-        // Arrange
-        const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        const carousel = new Carousel(carouselElement, testImages);
-
         // Act
         carousel.next();    // goto 2nd image
         carousel.prev();    // goto 1st image
@@ -121,10 +107,6 @@ describe("Carousel functionality", () => {
     });
 
     it("render the last image after immediately calling prev method", () => {
-        // Arrange
-        const carouselElement = document.querySelector('[data-cmp="carousel"]');
-        const carousel = new Carousel(carouselElement, testImages);
-
         // Act
         carousel.prev();    // goto last image
         const image = carousel.viewport.querySelector('img');
